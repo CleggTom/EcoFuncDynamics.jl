@@ -10,7 +10,7 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64};
     start::Int64=0, stop::Int64=500, use::Symbol=:nonstiff)
 
     @assert stop > start
-    @assert length(C) == p[:S]
+    @assert length(C) == p[:S] + 1
     @assert use ∈ vec([:stiff :nonstiff])
 
     # Pre-allocate the timeseries matrix
@@ -19,6 +19,9 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64};
 
     # Pre-assign function
     f(t, c) = dcdtCommunity(t, c, p)
+
+    #assign positive domain callback
+    pd = PositiveDomain()
 
     # Perform the actual integration
     prob = ODEProblem(f, C, t)
@@ -29,7 +32,7 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64};
     alg = Tsit5()
     end
 
-    sol = solve(prob, alg, dtmax = 1, saveat=t_keep, dense=false, save_timeseries=false)
+    sol = solve(prob, alg, cb = pd,  dtmax = 1, saveat=t_keep, dense=false, save_timeseries=false)
 
     output = Dict{Symbol,Any}(
     :p => p,
