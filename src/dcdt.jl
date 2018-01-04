@@ -7,9 +7,9 @@
 Gives the carbon mass change based on species parameters and current biomass
 """
 function dcdtSpecies(C::Float64,Sp::Species,T::Float64,k::Float64,N::Float64)
-    R_p = C * (Sp.R0_p * exp(-Sp.E_p / (k * (273.15+T))))
+    R_p = C * (Sp.R0_p * exp(-Sp.E_p / (k * (273.15+T)))) * (N / (Sp.K_s + N))
     R_r = C * (Sp.R0_r * exp(-Sp.E_r / (k * (273.15+T))))
-    dC = (R_p - R_r) * (N / (Sp.K_s + N))
+    dC = (R_p - R_r)
     return(dC)
 end
 

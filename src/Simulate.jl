@@ -18,7 +18,8 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64}, N::Float64;
     t_keep = collect(start:1.0:stop)
 
     #add nutrient to variable array
-    push!(C,N)
+    Cn = deepcopy(C)
+    push!(Cn,N)
 
     # Pre-assign function
     f(t, c) = dcdtCommunity(t, c, p)
@@ -27,7 +28,7 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64}, N::Float64;
     pd = PositiveDomain()
 
     # Perform the actual integration
-    prob = ODEProblem(f, C, t)
+    prob = ODEProblem(f, Cn, t)
 
     if use == :stiff
     alg = Rodas4()
