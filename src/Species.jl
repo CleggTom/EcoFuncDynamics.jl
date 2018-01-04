@@ -22,17 +22,17 @@ end
 """
 # Generate Community
 
-    community(S::Int64,R0::Float64,E::Float64)
+    community(S::Int64,R0::Float64,E::Float64,K_s::Float64)
 
 Generates a community of identical species given `R0, E and K_s` values and the
 number of species.
 """
-function community(S::Int64,R0::Float64,E::Float64,K_s)
+function community(S::Int64,R0::Float64,E::Float64,K_s::Float64)
     return(fill(Species(R0,E,K_s),S))
 end
 
 """
-    community(R0::Array{Float64},E::Array{Float64})
+    community(R0::Array{Float64},E::Array{Float64},K_s::Array{Float64})
 
 Can also take arrays giving specific values
 """
@@ -45,5 +45,3 @@ function community(R0::Array{Float64},E::Array{Float64},K_s::Array{Float64})
     end
     return(sp)
 end
-
-community(rand(10),rand(10),rand(10))

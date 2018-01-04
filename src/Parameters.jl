@@ -3,7 +3,8 @@
 """
 # Make Parameters
 
-    make_parameters(Com::Vector{Species}; T::Float64 = 15.0, k::Float64 = 8.617 * 10^-5.0)
+    make_parameters(Com::Vector{Species}; T::Float64 = 15.0, k::Float64 = 8.617
+    * 10^-5.0, D::Float64 = 0.25, N_Max::Float64 = 10.0)
 
 This function makes a dictionary containing all the parameters required for
 simulations. The only mandatory argument is a vector of species (a community).
@@ -38,7 +39,8 @@ end
     check_parameters(p::Dict{Symbol,Any})
 
 Checks the created parameters and makes sure all values are the
-correct types and have the right dimensions. Used internaly.
+correct types and have the right dimensions. Used internaly by `make_parameters`
+.
 """
 function check_parameters(p::Dict{Symbol,Any})
     #check types
