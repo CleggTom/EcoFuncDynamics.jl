@@ -19,16 +19,14 @@ simulations. The only mandatory argument is a vector of species (a community).
 * `N_Max:Float64 = 10.0` : The maximum nutrient concentration.
 """
 function make_parameters(Com::Vector{Species}; T::Float64 = 15.0,
-    k::Float64 = 8.617 * 10^-5.0, D::Float64 = 0.25, N_Max::Float64 = 10.0)
+    k::Float64 = 8.617 * 10^-5.0)
 
     S = length(Com)
 
     params = Dict(:Com => Com,
                   :S => S,
                   :T => T,
-                  :k => k,
-                  :D => D,
-                  :N_Max => N_Max)
+                  :k => k)
 
     check_parameters(params)
     return(params)
@@ -48,8 +46,7 @@ function check_parameters(p::Dict{Symbol,Any})
     @assert isa(p[:S],Int)
     @assert isa(p[:T],Float64)
     @assert isa(p[:k],Float64)
-    @assert isa(p[:D],Float64)
-    @assert isa(p[:N_Max],Float64)
+
 
     #check dimensions
     @assert length(p[:Com]) == p[:S]
