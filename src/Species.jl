@@ -43,8 +43,9 @@ end
 
 Can also take arrays giving specific values
 """
-community(R0_p::Array{Float64},E_p::Array{Float64},
-          R0_r::Array{Float64},E_r::Array{Float64},K_s::Array{Float64})
+function community(R0_p::Array{Float64},E_p::Array{Float64},
+                   R0_r::Array{Float64},E_r::Array{Float64},
+                   K_s::Array{Float64})
 
     @assert length(R0_p) == length(E_p) ==
             length(R0_r) == length(E_r) ==
