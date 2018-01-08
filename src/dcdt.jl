@@ -1,4 +1,4 @@
-#Functions that outline the model to be used
+#Functions that outline the model
 """
 # Species Photosynthetic Carbon flux
     dcdtSpecies(C::Float64,Sp::Species,T::Float64,k::Float64)

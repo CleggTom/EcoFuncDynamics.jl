@@ -45,12 +45,12 @@ Can also take arrays giving specific values
 """
 community(R0_p::Array{Float64},E_p::Array{Float64},
           R0_r::Array{Float64},E_r::Array{Float64},K_s::Array{Float64})
-          
+
     @assert length(R0_p) == length(E) == length(K_s)
 
     sp = Array{Species}(size(R0,1))
     for i = 1:size(R0,1)
-        sp[i] = Species(R0[i],E[i],K_s[i])
+        sp[i] = Species(R0_p[i],E_p[i],R0_r[i],E_r[i],K_s[i])
     end
     return(sp)
 end
