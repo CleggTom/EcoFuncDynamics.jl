@@ -46,7 +46,9 @@ Can also take arrays giving specific values
 community(R0_p::Array{Float64},E_p::Array{Float64},
           R0_r::Array{Float64},E_r::Array{Float64},K_s::Array{Float64})
 
-    @assert length(R0_p) == length(E) == length(K_s)
+    @assert length(R0_p) == length(E_p) ==
+            length(R0_r) == length(E_r) ==
+            length(K_s)
 
     sp = Array{Species}(size(R0,1))
     for i = 1:size(R0,1)
