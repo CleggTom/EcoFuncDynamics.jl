@@ -26,29 +26,32 @@ end
 # Community Carbon Flux
     dcdtCommunity(t,C,p::Dict{Symbol,Any})
 
-Gives the carbon mass change across a whole community. Note that the last carbon
-mass is the nutrient concentration
+Gives the carbon biomass change across a whole community. Note that the last
+variable in the simulation is the nutrient concentration, not in carbon units.
 
 """
 
 function dcdtCommunity(t,C,p::Dict{Symbol,Any})
+# Preassign vectors to store fluxes
     dcdt = zeros(length(C))
-
     S = length(p[:Com])
-
     SpResp = zeros(S)
     SpPhot = zeros(S)
 
+
+# Calculuate the fluxes for species carbon biomass change
     for i = 1:S
         SpResp[i] = SpeciesResp(C[i],p[:Com][i],p[:T],p[:k],C[end])
         SpPhot[i] = SpeciesPhoto(C[i],p[:Com][i],p[:T],p[:k],C[end])
     end
 
+# Get total carbon biomass change
     dcdt[1:end-1] = SpPhot .- SpResp
 
-    dcdt[end] = sum(SpResp) - sum(SpPhot)
+# Calculuate the nutrient concentration change
+    dcdt[end] = (p[:D]*(p[:N_Supply] - C[end])) - sum(SpResp)
 
-    #Shampine et al advice
+# Shampine et al. advice (to avoid negative biomass/nutrient concentrations)
     for i = 1:length(dcdt)
         if C[i] < 0.0
          dcdt[i] = max.(0,dcdt)

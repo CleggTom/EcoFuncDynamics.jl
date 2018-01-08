@@ -37,17 +37,20 @@ function community(S::Int64,R0_p::Float64,E_p::Float64,
     return(fill(Species(R0_p,E_p,R0_r,E_r,K_s),S))
 end
 
-# """
-#     community(R0::Array{Float64},E::Array{Float64},K_s::Array{Float64})
-#
-# Can also take arrays giving specific values
-# """
-# function community(R0::Array{Float64},E::Array{Float64},K_s::Array{Float64})
-#     @assert length(R0) == length(E) == length(K_s)
-#
-#     sp = Array{Species}(size(R0,1))
-#     for i = 1:size(R0,1)
-#         sp[i] = Species(R0[i],E[i],K_s[i])
-#     end
-#     return(sp)
-# end
+"""
+    community(R0_p::Array{Float64},E_p::Array{Float64},
+              R0_r::Array{Float64},E_r::Array{Float64},K_s::Array{Float64})
+
+Can also take arrays giving specific values
+"""
+community(R0_p::Array{Float64},E_p::Array{Float64},
+          R0_r::Array{Float64},E_r::Array{Float64},K_s::Array{Float64})
+          
+    @assert length(R0_p) == length(E) == length(K_s)
+
+    sp = Array{Species}(size(R0,1))
+    for i = 1:size(R0,1)
+        sp[i] = Species(R0[i],E[i],K_s[i])
+    end
+    return(sp)
+end

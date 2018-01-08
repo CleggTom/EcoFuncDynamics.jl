@@ -16,17 +16,19 @@ simulations. The only mandatory argument is a vector of species (a community).
 * `T::Float64 = 15.0` : The temperature at which the simulation occurs.
 * `k::Float64 = 8.617 * 10^-5.0` : The boltzman constant.
 * `D::Float64 = 0.25` : The nutrient turnover.
-* `N_Max:Float64 = 10.0` : The maximum nutrient concentration.
+* `N_Supply:Float64 = 10.0` : The nutrient supply concentration.
 """
 function make_parameters(Com::Vector{Species}; T::Float64 = 15.0,
-    k::Float64 = 8.617 * 10^-5.0)
+    k::Float64 = 8.617 * 10^-5.0, D::Float64 = 0.25, N_Supply::Float64 = 10.0)
 
     S = length(Com)
 
     params = Dict(:Com => Com,
                   :S => S,
                   :T => T,
-                  :k => k)
+                  :k => k,
+                  :D => D,
+                  :N_Supply => N_Supply)
 
     check_parameters(params)
     return(params)
@@ -46,6 +48,8 @@ function check_parameters(p::Dict{Symbol,Any})
     @assert isa(p[:S],Int)
     @assert isa(p[:T],Float64)
     @assert isa(p[:k],Float64)
+    @assert isa(p[:D],Float64)
+    @assert isa(p[:N_Supply],Float64)
 
 
     #check dimensions
