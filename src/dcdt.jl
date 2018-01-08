@@ -16,7 +16,7 @@ end
 
 Gives the respiration flux based on species parameters and current biomass
 """
-function SpeciesResp(C::Float64,Sp::Species,T::Float64,k::Float64,N::Float64)
+function SpeciesResp(C::Float64,Sp::Species,T::Float64,k::Float64)
     R_r = C * (Sp.R0_r * exp(-Sp.E_r / (k * (273.15+T))))
     return(R_r)
 end
@@ -34,6 +34,7 @@ variable in the simulation is the nutrient concentration, not in carbon units.
 function dcdtCommunity(t,C,p::Dict{Symbol,Any})
 # Preassign vectors to store fluxes
     dcdt = zeros(length(C))
+
     S = length(p[:Com])
     SpResp = zeros(S)
     SpPhot = zeros(S)
@@ -41,15 +42,15 @@ function dcdtCommunity(t,C,p::Dict{Symbol,Any})
 
 # Calculuate the fluxes for species carbon biomass change
     for i = 1:S
-        SpResp[i] = SpeciesResp(C[i],p[:Com][i],p[:T],p[:k],C[end])
         SpPhot[i] = SpeciesPhoto(C[i],p[:Com][i],p[:T],p[:k],C[end])
+        SpResp[i] = SpeciesResp(C[i],p[:Com][i],p[:T],p[:k])
     end
 
 # Get total carbon biomass change
     dcdt[1:end-1] = SpPhot .- SpResp
 
 # Calculuate the nutrient concentration change
-    dcdt[end] = (p[:D]*(p[:N_Supply] - C[end])) - sum(SpResp)
+    dcdt[end] = (p[:D]*(p[:N_supply] - C[end])) - sum(SpPhot)
 
 # Shampine et al. advice (to avoid negative biomass/nutrient concentrations)
     for i = 1:length(dcdt)
