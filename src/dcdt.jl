@@ -55,7 +55,7 @@ function dcdtCommunity(t,C,p::Dict{Symbol,Any})
 # Shampine et al. advice (to avoid negative biomass/nutrient concentrations)
     for i = 1:length(dcdt)
         if C[i] < 0.0
-         dcdt[i] = max.(0,dcdt)
+         # dcdt[i] = max.(0,dcdt)
         end
     end
 

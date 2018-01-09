@@ -25,7 +25,7 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64}, N::Float64;
     f(t, c) = dcdtCommunity(t, c, p)
 
     #assign positive domain callback
-    pd = PositiveDomain()
+    # pd = PositiveDomain()
 
     # Perform the actual integration
     prob = ODEProblem(f, Cn, t)
@@ -36,8 +36,8 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64}, N::Float64;
     alg = Tsit5()
     end
 
-    sol = solve(prob, alg, cb = pd,  dtmax = 1, saveat=t_keep, dense=false,
-    save_timeseries=false)
+    sol = solve(prob, alg,  dtmax = 1, saveat=t_keep, dense=false,
+    save_timeseries=false, maxiters = 1e10)
 
     output = Dict{Symbol,Any}(
     :p => p,
