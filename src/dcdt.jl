@@ -43,7 +43,7 @@ function dcdtCommunity(t,C,p::Dict{Symbol,Any})
 # Calculuate the fluxes for species carbon biomass change
     for i = 1:S
         SpPhot[i] = SpeciesPhoto(C[i],p[:Com][i],p[:T],p[:k],C[end])
-        SpResp[i] = SpeciesResp(C[i],p[:Com][i],p[:T],p[:k])
+        SpResp[i] = SpeciesResp(C[i],p[:Com][i],p[:T],p[:k],C[end])
     end
 
 # Get total carbon biomass change
