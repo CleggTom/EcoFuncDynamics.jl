@@ -16,8 +16,8 @@ end
 
 Gives the respiration flux based on species parameters and current biomass
 """
-function SpeciesResp(C::Float64,Sp::Species,T::Float64,k::Float64)
-    R_r = C * (Sp.R0_r * exp(-Sp.E_r / (k * (273.15+T))))
+function SpeciesResp(C::Float64,Sp::Species,T::Float64,k::Float64,N::Float64)
+    R_r = C * (Sp.R0_r * exp(-Sp.E_r / (k * (273.15+T))))  * (N / (Sp.K_s + N))
     return(R_r)
 end
 
@@ -53,11 +53,11 @@ function dcdtCommunity(t,C,p::Dict{Symbol,Any})
     dcdt[end] = (p[:D]*(p[:N_supply] - C[end])) - sum(SpPhot)
 
 # Shampine et al. advice (to avoid negative biomass/nutrient concentrations)
-    for i = 1:length(dcdt)
-        if C[i] < 0.0
-         # dcdt[i] = max.(0,dcdt)
-        end
-    end
+    # for i = 1:length(dcdt)
+    #     if C[i] < 0.0
+    #       dcdt[i] = max.(0,dcdt)
+    #     end
+    # end
 
     return(dcdt)
 end
