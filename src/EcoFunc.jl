@@ -8,6 +8,7 @@ module EcoFunc
 
 
     include(joinpath(".", "Species.jl"))
+    include(joinpath(".", "Community.jl"))
     include(joinpath(".", "Parameters.jl"))
     include(joinpath(".", "Simulate.jl"))
     include(joinpath(".", "dcdt.jl"))

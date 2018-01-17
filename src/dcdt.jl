@@ -1,26 +1,38 @@
 #Functions that outline the model
 """
-# Species Photosynthetic Carbon flux
-    dcdtSpecies(C::Float64,Sp::Species,T::Float64,k::Float64)
+# Boltzman Curve
+    boltzman(B0::Float64,E::Float64,T::Float64,T_ref::Float64)
 
-Gives the photosynthetic flux based on species parameters and current biomass
+Calculates the rate at temperature `T` given a set of parameters with the
+function:
+```math
+B = B0  exp((-E/k)((1/T)-(1/T_{ref})))
+```
+
 """
-function SpeciesPhoto(C::Float64,Sp::Species,T::Float64,k::Float64,N::Float64)
-    R_p = C * (Sp.R0_p * exp(-Sp.E_p / (k * (273.15+T)))) * (N / (Sp.K_s + N))
-    return(R_p)
+function boltzman(B0::Float64,E::Float64,T::Float64,T_ref::Float64)
+    return( B0 * exp((-E/(8.617 * 10^-5.0)) * ((1/T)-(1/T_ref))))
+end
+
+
+"""
+    boltzman(params::TpcParams,T::Float64)
+
+Can also take a `TpcParams` object instead of individual parameters
+"""
+function boltzman(p::TpcParams,T::Float64)
+    return( p.B0 * exp((-p.E/(8.617 * 10^-5.0)) * ((1/T)-(1/p.T_ref))))
 end
 
 """
-# Species Respiration Carbon flux
-    dcdtSpecies(C::Float64,Sp::Species,T::Float64,k::Float64)
+# Nutrient Limitation
+    n_lim(S::Float64,Ks::Float64)
 
-Gives the respiration flux based on species parameters and current biomass
+returns the amount of nutrient limitation
 """
-function SpeciesResp(C::Float64,Sp::Species,T::Float64,k::Float64,N::Float64)
-    R_r = C * (Sp.R0_r * exp(-Sp.E_r / (k * (273.15+T))))  * (N / (Sp.K_s + N))
-    return(R_r)
+function n_lim(S::Float64,Ks::Float64)
+    return(S/(Ks+S))
 end
-
 
 """
 # Community Carbon Flux
@@ -34,23 +46,22 @@ variable in the simulation is the nutrient concentration, not in carbon units.
 function dcdtCommunity(t,C,p::Dict{Symbol,Any})
 # Preassign vectors to store fluxes
     dcdt = zeros(length(C))
-
     S = length(p[:Com])
-    SpResp = zeros(S)
-    SpPhot = zeros(S)
 
+#calculate S gains
+    dcdt[end] = (p[:D]*(p[:N_supply] - C[end]))
 
 # Calculuate the fluxes for species carbon biomass change
     for i = 1:S
-        SpPhot[i] = SpeciesPhoto(C[i],p[:Com][i],p[:T],p[:k],C[end])
-        SpResp[i] = SpeciesResp(C[i],p[:Com][i],p[:T],p[:k],C[end])
+        # P-R
+        F = (boltzman(p[:Com][i].P,p[:T]) - boltzman(p[:Com][i].R,p[:T]))
+        # N-Lim
+        F *= n_lim(C[end],boltzman(p[:Com][i].Ks,p[:T])) * C[i]
+        # Take from N-gain
+        F > 0.0 ? dcdt[end] -= F : dcdt[end]
+        # Scale by Biomass + efficency
+        dcdt[i] = p[:Com][i].ϵ * F
     end
-
-# Get total carbon biomass change
-    dcdt[1:end-1] = SpPhot .- SpResp
-
-# Calculuate the nutrient concentration change
-    dcdt[end] = (p[:D]*(p[:N_supply] - C[end])) - sum(SpPhot)
 
 # Shampine et al. advice (to avoid negative biomass/nutrient concentrations)
     # for i = 1:length(dcdt)
