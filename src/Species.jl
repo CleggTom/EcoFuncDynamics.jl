@@ -13,7 +13,7 @@ Custom type that contains the parameter values for each species.
 * `R0_r::Float64` : The normalisation constant of respiration rate.
 * `E_r::Float64` : The temperature sensitivity of  respiration rate.
 * `K_s::Float64` : The half saturation densitiy of nutrient uptake.
-* 'ϵ::Float64' : The uptake efficency
+* 'ϵ::Float64' : The uptake efficiency
 """
 struct Species
     R0_p::Float64
@@ -44,7 +44,8 @@ end
 
 """
     community(R0_p::Array{Float64},E_p::Array{Float64},
-              R0_r::Array{Float64},E_r::Array{Float64},K_s::Array{Float64})
+              R0_r::Array{Float64},E_r::Array{Float64},
+              K_s::Array{Float64} ,ϵ::Array{Float64})
 
 Can also take arrays giving specific values
 """
