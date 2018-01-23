@@ -22,7 +22,7 @@ function simulate(p::Dict{Symbol,Any}, C::Array{Float64}, N::Float64;
     push!(Cn,N)
 
     # Pre-assign function
-    f(t, c) = dcdtCommunity(t, c, p)
+    f(t, c) = dcdt_community(t, c, p)
 
     #assign positive domain callback
     # pd = PositiveDomain()

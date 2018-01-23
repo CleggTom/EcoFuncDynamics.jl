@@ -35,15 +35,26 @@ function n_lim(S::Float64,Ks::Float64)
 end
 
 """
+# Species Carbon Flux
+
+    dcdt_species()
+"""
+function dcdt_species(sp::Species,C::Float64,S::Float64,p::Dict{Symbol,Any})
+    #get F: C * Nlim * (Photo - Resp)
+    F = n_lim(S,boltzman(sp.Ks,p[:T]))* (boltzman(sp.P,p[:T]) - boltzman(sp.R,p[:T]))
+    return(F * C)
+end
+
+
+"""
 # Community Carbon Flux
-    dcdtCommunity(t,C,p::Dict{Symbol,Any})
+    dcdt_community(t,C,p::Dict{Symbol,Any})
 
 Gives the carbon biomass change across a whole community. Note that the last
 variable in the simulation is the nutrient concentration, not in carbon units.
 
 """
-
-function dcdtCommunity(t,C,p::Dict{Symbol,Any})
+function dcdt_community(t,C,p::Dict{Symbol,Any})
 # Preassign vectors to store fluxes
     dcdt = zeros(length(C))
     S = length(p[:Com])
@@ -53,14 +64,10 @@ function dcdtCommunity(t,C,p::Dict{Symbol,Any})
 
 # Calculuate the fluxes for species carbon biomass change
     for i = 1:S
-        # P-R
-        F = (boltzman(p[:Com][i].P,p[:T]) - boltzman(p[:Com][i].R,p[:T]))
-        # N-Lim
-        F *= n_lim(C[end],boltzman(p[:Com][i].Ks,p[:T])) * C[i]
-        # Take from N-gain
-        F > 0.0 ? dcdt[end] -= F : dcdt[end]
-        # Scale by Biomass + efficency
-        dcdt[i] = p[:Com][i].ϵ * F
+        sp_flux = dcdt_species(p[:Com][i],C[i],C[end],p)
+        sp_flux > 0.0 ? dcdt[end] -= sp_flux : dcdt[end] #?
+        # Scale by  efficency
+        dcdt[i] = p[:Com][i].ϵ * sp_flux
     end
 
 # Shampine et al. advice (to avoid negative biomass/nutrient concentrations)

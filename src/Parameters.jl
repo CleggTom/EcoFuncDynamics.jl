@@ -17,7 +17,7 @@ simulations. The only mandatory argument is a vector of species (a community).
 * `D::Float64 = 0.25` : The nutrient turnover.
 * `N_Supply:Float64 = 10.0` : The nutrient supply concentration.
 """
-function make_parameters(Com::Vector{Species}; T::Float64 = 15.0,
+function make_parameters(Com::Vector{Species}; T::Float64 = 273.15,
                          D::Float64 = 0.25, N_supply::Float64 = 10.0)
 
     S = length(Com)
