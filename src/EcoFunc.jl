@@ -3,14 +3,13 @@ module EcoFunc
     using DifferentialEquations
 
     export simulate,
-           community,
            make_parameters
 
-
-    include(joinpath(".", "Species.jl"))
+    include(joinpath(".", "Types.jl"))
     include(joinpath(".", "Parameters.jl"))
-    include(joinpath(".", "Simulate.jl"))
+    include(joinpath(".", "Constants.jl"))
     include(joinpath(".", "dcdt.jl"))
+    include(joinpath(".", "simulate.jl"))
 
 
 end # module

@@ -3,55 +3,27 @@
 """
 # Make Parameters
 
-    make_parameters(Com::Vector{Species}; T::Float64 = 15.0, k::Float64 = 8.617
-    * 10^-5.0, D::Float64 = 0.25, N_Max::Float64 = 10.0)
+    make_parameters(Com::Community; CPool::Bool = true, T::Float64 = 15.0)
 
 This function makes a dictionary containing all the parameters required for
 simulations. The only mandatory argument is a vector of species (a community).
 
 ## Parameters
-
-* `Com::Vector{Species}` : The vector of species types that includes all species.
-* `S::Int64` : The number of species (calculated internaly).
+* `Com::Community` : The vector of species types that includes all species.
+* `CPool::Bool = true` : determines wether a Carbon pool links autotrophs and heterotrophs
 * `T::Float64 = 15.0` : The temperature at which the simulation occurs.
-* `k::Float64 = 8.617 * 10^-5.0` : The boltzman constant.
-* `D::Float64 = 0.25` : The nutrient turnover.
-* `N_Supply:Float64 = 10.0` : The nutrient supply concentration.
 """
-function make_parameters(Com::Vector{Species}; T::Float64 = 15.0,
-    k::Float64 = 8.617 * 10^-5.0, D::Float64 = 0.25, N_supply::Float64 = 10.0)
+function make_parameters(Eco::Ecosystem; T::Float64 = 295.0)
 
-    S = length(Com)
+        @assert length(find(x -> isa(x,Cpool) , Eco.sp)) == 1
+        @assert length(find(x -> isa(x,Spool) , Eco.sp)) == 1
 
-    params = Dict(:Com => Com,
-                  :S => S,
-                  :T => T,
-                  :k => k,
-                  :D => D,
-                  :N_supply => N_supply)
+        s_i = find(x -> isa(x,Spool), Eco.sp)[1]
+        c_i = find(x -> isa(x,Cpool), Eco.sp)[1]
 
-    check_parameters(params)
-    return(params)
-end
-
-"""
-# Check Parameters
-    check_parameters(p::Dict{Symbol,Any})
-
-Checks the created parameters and makes sure all values are the
-correct types and have the right dimensions. Used internaly by `make_parameters`
-.
-"""
-function check_parameters(p::Dict{Symbol,Any})
-    #check types
-    @assert isa(p[:Com],Vector{Species})
-    @assert isa(p[:S],Int)
-    @assert isa(p[:T],Float64)
-    @assert isa(p[:k],Float64)
-    @assert isa(p[:D],Float64)
-    @assert isa(p[:N_supply],Float64)
-
-
-    #check dimensions
-    @assert length(p[:Com]) == p[:S]
+        p = Dict{Symbol,Any}(:Eco => Eco,
+                             :T => T,
+                             :s_i => s_i,
+                             :c_i => c_i)
+        return(p)
 end

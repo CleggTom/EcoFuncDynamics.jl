@@ -6,29 +6,21 @@
 
 """
 
-function simulate(p::Dict{Symbol,Any}, C::Array{Float64}, N::Float64;
+function simulate(p::Dict{Symbol,Any}, u0::Array{Float64},
     start::Int64=0, stop::Int64=500, use::Symbol=:nonstiff)
 
     @assert stop > start
-    @assert length(C) == p[:S]
+    @assert length(u0) == p[:Eco].N_sp
     @assert use ∈ vec([:stiff :nonstiff])
+    @assert length(find(x -> isa(x,Cpool) , p[:Eco].sp)) == 1
+    @assert length(find(x -> isa(x,Spool) , p[:Eco].sp)) == 1
 
     # Pre-allocate the timeseries matrix
     t = (float(start), float(stop))
     t_keep = collect(start:1.0:stop)
 
-    #add nutrient to variable array
-    Cn = deepcopy(C)
-    push!(Cn,N)
-
-    # Pre-assign function
-    f(t, c) = dcdtCommunity(t, c, p)
-
-    #assign positive domain callback
-    # pd = PositiveDomain()
-
     # Perform the actual integration
-    prob = ODEProblem(f, Cn, t)
+    prob = ODEProblem(dcdt, u0, t, p)
 
     if use == :stiff
     alg = Rodas4()
