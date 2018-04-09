@@ -2,8 +2,10 @@ module EcoFuncDynamics
 
     using DifferentialEquations
 
-    export simulate,
-           make_parameters
+    export TPC,
+    Compartment, Species, Heterotroph, Autotroph, Resource, Cpool, Spool,
+    make_parameters,
+    simulate
 
     include(joinpath(".", "Types.jl"))
     include(joinpath(".", "Parameters.jl"))
