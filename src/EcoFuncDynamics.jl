@@ -9,7 +9,7 @@ module EcoFuncDynamics
     include(joinpath(".", "Parameters.jl"))
     include(joinpath(".", "Constants.jl"))
     include(joinpath(".", "dcdt.jl"))
-    include(joinpath(".", "simulate.jl"))
+    include(joinpath(".", "Simulate.jl"))
     include(joinpath(".", "EcosystemFunction.jl"))
 
 
