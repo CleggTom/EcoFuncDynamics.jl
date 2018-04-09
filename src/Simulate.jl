@@ -31,10 +31,5 @@ function simulate(p::Dict{Symbol,Any}, u0::Array{Float64},
     sol = solve(prob, alg,  dtmax = 1, saveat=t_keep, dense=false,
     save_timeseries=false, maxiters = 1e10)
 
-    output = Dict{Symbol,Any}(
-    :p => p,
-    :t => sol.t,
-    :C => hcat(sol.u...)'
-    )
-
+    return(sol)
 end

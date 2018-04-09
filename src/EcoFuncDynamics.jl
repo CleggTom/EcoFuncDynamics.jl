@@ -1,4 +1,4 @@
-module EcoFunc
+module EcoFuncDynamics
 
     using DifferentialEquations
 
@@ -10,6 +10,7 @@ module EcoFunc
     include(joinpath(".", "Constants.jl"))
     include(joinpath(".", "dcdt.jl"))
     include(joinpath(".", "simulate.jl"))
+    include(joinpath(".", "EcosystemFunction.jl"))
 
 
 end # module

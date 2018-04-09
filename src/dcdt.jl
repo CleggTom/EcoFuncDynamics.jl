@@ -161,7 +161,7 @@ function individual_flux(comp::Spool,p::Dict{Symbol,Any},C::Array{Float64},
     out = 0.0
 
     for j in 1:p[:Eco].N_sp
-        if (j != s_i) && (j != c_i)
+        if (j != p[:s_i]) && (j != p[:c_i])
             out += S_out(p[:Eco].sp[j],p,C,j)
         end
     end
