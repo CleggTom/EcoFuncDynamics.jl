@@ -33,9 +33,9 @@ Returns the individual flux for an autotroph species
 function individual_flux(comp::Autotroph,p::Dict{Symbol,Any},C::Array{Float64},
     i::Int64)
 
-    in = C[i] * comp.ϵ * limit(C[p[:s_i]],comp.ks) * boltzman(comp.P,p[:T])
-    out = (C[i] * boltzman(comp.R,p[:T])) + (C[i] * comp.D) + (C[i] * C[i] * comp.a)
-    return(in - out)
+    C[i] * comp.ϵ * limit(C[p[:s_i]],comp.ks) * boltzman(comp.P,p[:T]) -
+    (C[i] * boltzman(comp.R,p[:T])) - (C[i] * comp.D) - (C[i] * C[i] * comp.a)
+
 end
 
 """
@@ -48,9 +48,8 @@ or for a heterotroph species
 function individual_flux(comp::Heterotroph,p::Dict{Symbol,Any},C::Array{Float64},
     i::Int64)
 
-    in = C[i] * comp.ϵ * limit(C[p[:s_i]],comp.ks) * boltzman(comp.μ,p[:T]) * limit(C[p[:c_i]],comp.kc)
-    out = (C[i] * boltzman(comp.R,p[:T])) + (C[i] * comp.D) + (C[i] * C[i] * comp.a)
-    return(in - out)
+    C[i] * comp.ϵ * limit(C[p[:s_i]],comp.ks) * boltzman(comp.μ,p[:T]) * limit(C[p[:c_i]],comp.kc) -
+    (C[i] * boltzman(comp.R,p[:T])) - (C[i] * comp.D) - (C[i] * C[i] * comp.a)
 end
 
 """
@@ -65,8 +64,8 @@ species.
 function C_out(sp::Autotroph,p::Dict{Symbol,Any},C::Array{Float64},
     j::Int64)
 
-    out = (C[j] * (1-sp.ϵ) * limit(C[p[:s_i]],sp.ks) * boltzman(sp.P,p[:T])) +
-          (C[j] * sp.D)
+    (C[j] * (1-sp.ϵ) * limit(C[p[:s_i]],sp.ks) * boltzman(sp.P,p[:T])) +
+    (C[j] * sp.D)
 end
 
 """
@@ -80,8 +79,8 @@ species.
 function C_out(sp::Heterotroph,p::Dict{Symbol,Any},C::Array{Float64},
     j::Int64)
 
-    out = (C[j] * (1-sp.ϵ) * limit(C[p[:s_i]],sp.ks) * boltzman(sp.μ,p[:T]) * limit(C[p[:c_i]],sp.kc)) +
-          (C[j] * sp.D)
+    (C[j] * (1-sp.ϵ) * limit(C[p[:s_i]],sp.ks) * boltzman(sp.μ,p[:T]) * limit(C[p[:c_i]],sp.kc)) +
+    (C[j] * sp.D)
 end
 
 
@@ -128,7 +127,7 @@ species.
 function S_out(sp::Autotroph,p::Dict{Symbol,Any},C::Array{Float64},
     j::Int64)
 
-    out = C[j] * limit(C[p[:s_i]],sp.ks) * boltzman(sp.P,p[:T])
+    C[j] * limit(C[p[:s_i]],sp.ks) * boltzman(sp.P,p[:T])
 end
 
 """
@@ -142,7 +141,7 @@ species.
 function S_out(sp::Heterotroph,p::Dict{Symbol,Any},C::Array{Float64},
     j::Int64)
 
-    out = C[j] * limit(C[p[:s_i]],sp.ks) * boltzman(sp.μ,p[:T]) * limit(C[p[:c_i]],sp.kc)
+    C[j] * limit(C[p[:s_i]],sp.ks) * boltzman(sp.μ,p[:T]) * limit(C[p[:c_i]],sp.kc)
 end
 
 
@@ -177,7 +176,7 @@ end
 
     dcdt(dc,c,p,t)
 
-Defines the system of equations to be used by the solver.
+Defines the quantity change at a single timestep to be used by the solver.
 """
 function dcdt(du,u,p,t)
 
