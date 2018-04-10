@@ -3,15 +3,14 @@
 """
 # Individual compartment function
 
-    individual_func(comp::Autotroph,u::Array{Float64},p::Dict{Symbol,Any},i::Int64)
+    individual_func(comp::Autotroph,u::Array{Float64},p::Parameter,i::Int64)
 
 
 """
-function individual_func(comp::Autotroph,u::Array{Float64},p::Dict{Symbol,Any},
-    i::Int64)
+function individual_func(comp::Autotroph,u::Array{Float64},p::Parameter,i::Int64)
 
-    in = u[i]  * limit(u[p[:s_i]],comp.ks) * boltzman(comp.P,p[:T])
-    out = u[i] * boltzman(comp.R,p[:T])
+    in = u[i]  * limit(u[p.s_i],comp.ks) * boltzman(comp.P,p.T) - (u[i]*u[i] * comp.a)
+    out = u[i] * boltzman(comp.R,p.T)
 
     return(in - out)
 end
@@ -19,14 +18,13 @@ end
 """
 ## Heterotroph
 
-    individual_func(comp::Autotroph,u::Array{Float64},p::Dict{Symbol,Any},i::Int64)
+    individual_func(comp::Autotroph,u::Array{Float64},p::Parameter,i::Int64)
 
 
 """
-function individual_func(comp::Heterotroph,u::Array{Float64},p::Dict{Symbol,Any},
-    i::Int64)
+function individual_func(comp::Heterotroph,u::Array{Float64},p::Parameter,i::Int64)
 
-     - u[i] * boltzman(comp.R,p[:T])
+     - u[i] * boltzman(comp.R,p.T)
 
 end
 
@@ -34,16 +32,16 @@ end
 """
 # Ecosystem Function
 
-    dcdt(dc,c,p,t)
+    eco_func(u,p)
 
-Defines the system of equations to be used by the solver.
+gets the net flux given a set of parameters
 """
 function eco_func(u,p)
     Flux = zeros(u)
     #move through and return dc
-        for i in 1:length(p[:Eco].sp)
-            if isa(p[:Eco].sp[i],Species)
-                Flux[i] = individual_func(p[:Eco].sp[i],u,p,i)
+        for i in 1:p.n_sp
+            if isa(p.Eco[i],Species)
+                Flux[i] = individual_func(p.Eco[i],u,p,i)
             end
         end
 

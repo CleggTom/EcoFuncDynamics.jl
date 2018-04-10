@@ -110,19 +110,3 @@ nutrient or an other resource such as light.
 struct Spool <: Resource
     R::Float64
 end
-
-"""
-# Ecosystem
-    Ecosystem(sp::Array{Compartment})
-
-Type for communities with multiple compartments.
-"""
-struct Ecosystem
-    sp::Vector{Compartment}
-    N_sp::Int8
-
-    function Ecosystem(comp::Vector{Compartment})
-        n::Int8 = length(comp)
-        new(comp,n)
-    end
-end

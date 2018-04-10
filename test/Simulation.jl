@@ -1,44 +1,32 @@
 using EcoFuncDynamics
 using Plots
+using BenchmarkTools
+
 gr()
 
-function main()
-    #get data
-    P = EcoFuncDynamics.TPC(3,0.32,295.)
-    Ra = EcoFuncDynamics.TPC(1,0.65,295.)
-    μ = EcoFuncDynamics.TPC(5,0.98,295.)
-    Rh = EcoFuncDynamics.TPC(1,0.65,295.)
 
-    aut = EcoFuncDynamics.Autotroph(P,0.9,20.0,Ra,.1,.1)
-    het = EcoFuncDynamics.Heterotroph(0.9,5.0,μ,1.0,Rh,.1,.1)
+#get data
+# P = EcoFuncDynamics.TPC(1.2e-05,0.45277277,295.)
+# Ra = EcoFuncDynamics.TPC(1.5e-06,0.7692876,295.)
 
-    C = EcoFuncDynamics.Cpool(true)
-    S = EcoFuncDynamics.Spool(9.0)
-    comp = [aut,het,C,S]
-    eco = EcoFuncDynamics.Ecosystem(comp)
+P = TPC(1e1,0.32,295.)
+Ra = TPC(1e0,0.65,295.)
 
-    #make parameters
-    p = make_parameters(eco)
+μ = TPC(1e1,0.78,295.)
+Rh = TPC(1e0,0.65,295.)
 
-    C = [0.1,0.1,0.1,0.1]
+aut = Autotroph(P,0.8,0.1,Ra,.1,.1)
+het = Heterotroph(0.8,0.1,μ,1.0,Rh,.1,.1)
 
-    simulate(p,C,0,5000)
-end
+C = Cpool(true)
+S = Spool(10.)
+eco = [aut,het,C,S]
 
-@time main()
+#make parameters
+p = Parameter(eco)
 
-@profile main()
+C = [1.,1.,1.,1.]
+
+simulate(p,C,0,100)
+
 Juno.profiler()
-
-
-
-
-plot(sol)
-
-u = sol[:,end]
-
-EcoFuncDynamics.eco_func(u,p)
-
-plot(sol(1:50,Val{1}))
-
-@profile main()
