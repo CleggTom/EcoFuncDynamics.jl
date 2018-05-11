@@ -9,8 +9,8 @@
 """
 function individual_func(comp::Autotroph,u::Array{Float64},p::Parameter,i::Int64)
 
-    in = u[i]  * limit(u[p.s_i],comp.ks) * boltzman(comp.P,p.T) - (u[i]*u[i] * comp.a)
-    out = u[i] * boltzman(comp.R,p.T)
+    in = (limit(u[p.s_i],comp.ks) * boltzman(comp.P,p.T)) - (u[i] * comp.a)
+    out = boltzman(comp.R,p.T)
 
     return(in - out)
 end
@@ -24,7 +24,7 @@ end
 """
 function individual_func(comp::Heterotroph,u::Array{Float64},p::Parameter,i::Int64)
 
-     - u[i] * boltzman(comp.R,p.T)
+     -boltzman(comp.R,p.T)
 
 end
 
