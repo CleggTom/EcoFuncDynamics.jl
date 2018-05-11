@@ -32,7 +32,7 @@ Returns the individual flux for an autotroph species
 """
 function individual_flux(comp::Autotroph,p::Parameter,C::Array{Float64},i::Int64)
 
-    C[i] * comp.ϵ * limit(C[p.c_i],comp.ks) * boltzman(comp.P,p.T) -
+    C[i] * comp.ϵ * limit(C[p.s_i],comp.ks) * boltzman(comp.P,p.T) -
     (C[i] * boltzman(comp.R,p.T)) - (C[i] * comp.D) - (C[i] * C[i] * comp.a)
 
 end
@@ -99,7 +99,7 @@ function individual_flux(comp::Cpool,p::Parameter,C::Array{Float64},i::Int64)
             if (j != p.s_i) && (j != p.c_i)
                 in += C_out(p.Eco[j],p,C,j)
                 #heterotroph uptake
-                if isa(p.Eco[j],Heterotroph)
+                if isa(p.Eco[j],Heterotroph) # && (C[p.c_i] > 0)
                     sp = p.Eco[j]
                     out += C[j] * limit(C[p.s_i],sp.ks) *
                            boltzman(sp.μ,p.T) * limit(C[p.c_i],sp.kc)
@@ -154,11 +154,14 @@ function individual_flux(comp::Spool,p::Parameter,C::Array{Float64},
     in = comp.R
     out = 0.0
 
-    for j in 1:p.n_sp
-        if (j != p.s_i) && (j != p.c_i)
-            out += S_out(p.Eco[j],p,C,j)
+    # if C[p.s_i] > 0
+        for j in 1:p.n_sp
+            if (j != p.s_i) && (j != p.c_i)
+                out += S_out(p.Eco[j],p,C,j)
+            end
         end
-    end
+    # end
+
 
 
     return(in - out)
@@ -178,6 +181,9 @@ function dcdt(du,u,p,t)
 #move through and return dc
     for i in 1:p.n_sp
         du[i] = individual_flux(p.Eco[i],p,u,i)
+        if (u[i] + du[i]) < 0
+            du[i] = -u[i]
+        end
     end
 
     return(du)
