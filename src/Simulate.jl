@@ -16,7 +16,7 @@ Preforms the simulation over a given time period.
 """
 
 function simulate(p::Parameter, u0::Array{Float64},
-    start::Int64=0, stop::Int64=500)
+    start::Int64=0, stop::Int64=500, col::Float64=1.0)
 
     @assert stop > start
     @assert length(u0) == p.n_sp
@@ -25,7 +25,7 @@ function simulate(p::Parameter, u0::Array{Float64},
 
     # Pre-allocate the timeseries matrix
     t = (float(start), float(stop))
-    t_keep = collect(start:1.0:stop)
+    t_keep = collect(start:col:stop)
 
     # Perform the actual integration
     prob = DifferentialEquations.ODEProblem(dcdt, u0, t, p)
